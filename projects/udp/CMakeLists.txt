@@ -1,3 +1,0 @@
-add_subdirectory(senders)
-add_subdirectory(receivers)
-add_subdirectory(multicast)

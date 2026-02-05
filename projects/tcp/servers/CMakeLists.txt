@@ -1,5 +1,0 @@
-add_subdirectory(single_thread_server)
-add_subdirectory(multi_thread_server)
-add_subdirectory(number_prime_tcp_server)
-add_subdirectory(square_root_server)
-add_subdirectory(mt_square_root_server)
