@@ -268,3 +268,9 @@ __pycache__/
 build
 cmake-build-debug
 dist
+
+#TEMPLATE CODE FOR NET
+projects/template/
+docs/
+images/
+Readme.md

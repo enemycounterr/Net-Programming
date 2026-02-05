@@ -3,7 +3,6 @@ project(Lab1)
 
 
 # Ціль для Сервера
-include_directories(individual/include)
 add_executable(${PROJECT_NAME}_individual_server individual/src/server.cpp)
 target_link_libraries(${PROJECT_NAME}_individual_server ${COMMON_DEPENDENCIES})
 

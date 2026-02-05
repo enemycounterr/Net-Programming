@@ -1,6 +1,5 @@
-
-#include "helper.h"
 #include <vector>
+#include "common_net.h"
 
 #pragma warning(disable : 4996)
 // #pragma comment(lib, "ws2_32.lib")
@@ -14,8 +13,7 @@ void error_msg(const char *msg)
 
 void client()
 {
-    // Якщо сервер на цьому ж ПК - 127.0.0.1
-    // Якщо на іншому - зміни IP
+
     char host[256] = "127.0.0.1";
     short port = DEFAULT_PORT;
 
@@ -45,7 +43,7 @@ void client()
         int count = 0;
         printf("Enter count of numbers: ");
         if (scanf("%d", &count) != 1)
-        { // Чистимо буфер, якщо ввели букви
+        {
             while (getchar() != '\n')
                 ;
             continue;
@@ -57,7 +55,6 @@ void client()
             break;
         }
 
-        // Створюємо масив
         std::vector<int> numbers(count);
         printf("Enter %d numbers: ", count);
         for (int i = 0; i < count; i++)
@@ -66,8 +63,6 @@ void client()
         }
         printf("The whole data was stored into array");
 
-        // 1. ВІДПРАВКА РОЗМІРУ (Кількості)
-        // (char*)&count - беремо адресу змінної і кажемо "вважай це просто байтами"
         int ret = send(s, (char *)&count, sizeof(int), 0);
         if (ret <= 0)
         {
@@ -75,9 +70,6 @@ void client()
             break;
         }
 
-        // 2. ВІДПРАВКА ДАНИХ (Масиву)
-        // numbers.data() повертає вказівник на перший елемент масиву (int*)
-        // sizeof(int) * count - це загальна вага посилки в байтах
         ret = send(s, (char *)numbers.data(), sizeof(int) * count, 0);
         if (ret <= 0)
         {
@@ -87,7 +79,6 @@ void client()
 
         printf("Sent array to server. Waiting for result...\n");
 
-        // 3. ОТРИМАННЯ ВІДПОВІДІ
         char response[1024] = {0};
         ret = recv(s, response, sizeof(response), 0);
 
@@ -97,7 +88,6 @@ void client()
             break;
         }
 
-        // Ставимо нуль-термінатор про всяк випадок
         response[ret] = '\0';
         printf("\nServer Reply:\n%s\n-----------------------\n", response);
     }

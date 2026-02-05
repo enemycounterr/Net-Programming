@@ -2,7 +2,7 @@
 // #include <string.h>
 // #include <winsock2.h>
 // #include <limits.h> 
-#include "helper.h"
+#include "common_net.h"
 
 #pragma warning(disable : 4996)
 // #pragma comment(lib, "ws2_32.lib") // Якщо не підключено через CMake
@@ -22,30 +22,24 @@ void handle_connection(SOCKET client_socket, struct sockaddr_in *addr)
 
     while (1)
     {
-        // 1. Отримуємо КІЛЬКІСТЬ елементів (розмір масиву)
         int count = 0;
         int ret = recv(client_socket, (char*)&count, sizeof(int), 0);
 
-        // Перевірка: якщо клієнт відключився або помилка
         if (ret <= 0) {
             break; 
         }
 
         printf("[%s] Incoming array size: %d\n", str_addr, count);
 
-        // Захист від дурня (якщо прислали 0 або від'ємне число)
         if (count <= 0 || count > 10000) {
             char err[] = "Invalid array size";
             send(client_socket, err, strlen(err), 0);
             continue;
         }
 
-        // 2. Виділяємо пам'ять під масив і отримуємо дані
         int* numbers = new int[count];
         int total_bytes = count * sizeof(int);
         
-        // recv може не отримати весь масив за один раз, тому, в ідеалі, треба цикл.
-        // Але для лабораторної (локально) спростимо:
         ret = recv(client_socket, (char*)numbers, total_bytes, 0);
 
         if (ret != total_bytes) {
@@ -54,15 +48,14 @@ void handle_connection(SOCKET client_socket, struct sockaddr_in *addr)
             break;
         }
 
-        // 3. ОБРОБКА: Шукаємо мін, макс, середнє
         int min_val = INT_MAX;
         int max_val = INT_MIN;
-        long long sum = 0; // long long, щоб сума не переповнилась
+        long long sum = 0; 
 
         printf("[%s] Data: ", str_addr);
         for (int i = 0; i < count; i++) {
             int val = numbers[i];
-            printf("%d ", val); // Вивід у консоль сервера для дебагу
+            printf("%d ", val); 
 
             if (val < min_val) min_val = val;
             if (val > max_val) max_val = val;
@@ -72,16 +65,13 @@ void handle_connection(SOCKET client_socket, struct sockaddr_in *addr)
 
         double avg_val = (double)sum / count;
 
-        // 4. Формуємо відповідь
         char response[1024];
         sprintf(response, 
             "Results:\n -> Min: %d\n -> Max: %d\n -> Avg: %.2f", 
             min_val, max_val, avg_val);
 
-        // 5. Відправляємо відповідь клієнту
         send(client_socket, response, strlen(response), 0);
 
-        // Не забуваємо чистити пам'ять
         delete[] numbers;
     }
 
