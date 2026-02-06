@@ -1,11 +1,6 @@
-// #include <stdio.h>
-// #include <string.h>
-// #include <winsock2.h>
-// #include <limits.h> 
 #include "common_net.h"
 
 #pragma warning(disable : 4996)
-// #pragma comment(lib, "ws2_32.lib") // Якщо не підключено через CMake
 
 #define DEFAULT_PORT 5553
 #define CONNECTION_QUEUE 100

@@ -61,7 +61,7 @@ void client()
         {
             scanf("%d", &numbers[i]);
         }
-        printf("The whole data was stored into array");
+        printf("The whole data was stored into array\n");
 
         int ret = send(s, (char *)&count, sizeof(int), 0);
         if (ret <= 0)
