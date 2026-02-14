@@ -141,17 +141,13 @@ void server()
             continue;
         }
 
-        // ЗАПУСК ПОТОКУ
-        // Замість виклику функції напряму (handle_connection), ми створюємо потік.
-        // new_socket передаємо як параметр (LPVOID)
         HANDLE hThread = CreateThread(
-            NULL,               // Атрибути безпеки (NULL - за замовчуванням)
-            0,                  // Розмір стеку (0 - за замовчуванням)
-            ClientHandler,      // Вказівник на функцію потоку
-            (LPVOID)new_socket, // Параметр для функції (наш сокет)
-            0,                  // Прапорці створення (0 - запустити негайно)
-            NULL                // ID потоку (нам не потрібен, тому NULL)
-        );
+            NULL,
+            0,
+            ClientHandler,
+            (LPVOID)new_socket,
+            0,
+            NULL);
 
         if (hThread == NULL)
         {
