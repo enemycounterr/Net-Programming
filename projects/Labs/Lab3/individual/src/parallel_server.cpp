@@ -132,7 +132,6 @@ void server()
         sockaddr_in client_addr = {};
         int len = sizeof(client_addr);
 
-        // Головний потік тільки приймає з'єднання
         SOCKET new_socket = accept(s, (sockaddr *)&client_addr, &len);
 
         if (new_socket == INVALID_SOCKET)
