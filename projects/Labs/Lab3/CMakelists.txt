@@ -6,18 +6,17 @@ project(Lab3)
 #target for server
 add_executable(${PROJECT_NAME}_individual_server individual/src/parallel_server.cpp)
 target_link_libraries(${PROJECT_NAME}_individual_server ${COMMON_DEPENDENCIES})
-# target for client
-# add_executable(${PROJECT_NAME}_individual_client individual/src/client.cpp)
-# target_link_libraries(${PROJECT_NAME}_individual_client ${COMMON_DEPENDENCIES})
 #--------------------------------------------------------------------------------#
 
 
 
 #--------------------------------------------------------------------------------#
 #PRACTICAL
-# include_directories(practical/include)
-# add_executable(${PROJECT_NAME}_practical_nslookup practical/src/ns_lookup.cpp)
-# target_link_libraries(${PROJECT_NAME}_practical_nslookup ${COMMON_DEPENDENCIES})
+include_directories(practical/include)
+add_executable(${PROJECT_NAME}_practical_echo_server practical/src/echo_server.cpp)
+add_executable(${PROJECT_NAME}_practical_echo_client practical/src/echo_client.cpp)
+target_link_libraries(${PROJECT_NAME}_practical_echo_server ${COMMON_DEPENDENCIES})
+target_link_libraries(${PROJECT_NAME}_practical_echo_client ${COMMON_DEPENDENCIES})
 
 # include_directories(practical/include)
 # add_executable(${PROJECT_NAME}_practical_udp_server practical/src/udp_server.cpp)
