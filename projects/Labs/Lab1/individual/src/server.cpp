@@ -114,9 +114,9 @@ void server()
 
 int main()
 {
-    WSADATA wsaData;
-    WSAStartup(MAKEWORD(2, 2), &wsaData);
+
+    common_init_handler();
     server();
-    WSACleanup();
+    common_exit_handler();
     return 0;
 }
