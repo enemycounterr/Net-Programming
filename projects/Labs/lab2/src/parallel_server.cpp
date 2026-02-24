@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <winsock2.h>
-#include <windows.h>
 #include <limits.h>
 #include "common_net.h"
 #include "../include/protocol.h"
