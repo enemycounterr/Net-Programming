@@ -114,7 +114,6 @@ void server()
 
 int main()
 {
-
     common_init_handler();
     server();
     common_exit_handler();
