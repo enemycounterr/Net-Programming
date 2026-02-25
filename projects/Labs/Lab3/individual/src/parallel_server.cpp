@@ -1,7 +1,5 @@
-#include <stdio.h>
-#include <string.h>
-#include <winsock2.h>
-#include <windows.h>
+#include "common_net.h"
+#include "../include/own_protocol.h"
 #include <limits.h>
 
 #pragma warning(disable : 4996)
@@ -32,29 +30,19 @@ DWORD WINAPI ClientHandler(LPVOID clientSocketParam)
 
     while (1)
     {
-        int count = 0;
-        int ret = recv(client_socket, (char *)&count, sizeof(int), 0);
+        ClientRequest req;
+        memset(&req, 0, sizeof(ClientRequest));
 
-        if (ret <= 0)
+        if (recv(client_socket, (char *)&req, sizeof(ClientRequest), 0) <= 0)
             break;
 
         EnterCriticalSection(&consoleLock);
-        printf("[%s] Incoming array size: %d\n", str_addr, count);
+        printf("[%s] Incoming array size: %d\n", str_addr, req.count);
         LeaveCriticalSection(&consoleLock);
 
-        if (count <= 0 || count > 10000)
+        if (req.count <= 0 || req.count > 10000)
         {
             continue;
-        }
-
-        int *numbers = new int[count];
-        int total_bytes = count * sizeof(int);
-
-        ret = recv(client_socket, (char *)numbers, total_bytes, 0);
-        if (ret != total_bytes)
-        {
-            delete[] numbers;
-            break;
         }
 
         int min_val = INT_MAX;
@@ -63,9 +51,9 @@ DWORD WINAPI ClientHandler(LPVOID clientSocketParam)
 
         EnterCriticalSection(&consoleLock);
         printf("[%s] Data: ", str_addr);
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < req.count; i++)
         {
-            int val = numbers[i];
+            int val = req.data[i];
             printf("%d ", val);
             if (val < min_val)
                 min_val = val;
@@ -76,16 +64,12 @@ DWORD WINAPI ClientHandler(LPVOID clientSocketParam)
         printf("\n");
         LeaveCriticalSection(&consoleLock);
 
-        double avg_val = (double)sum / count;
+        ServerResponse res;
+        res.min = min_val;
+        res.max = max_val;
+        res.average = (double)sum / req.count;
 
-        char response[1024];
-        sprintf(response,
-                "Results from Thread %lu:\n -> Min: %d\n -> Max: %d\n -> Avg: %.2f",
-                GetCurrentThreadId(), min_val, max_val, avg_val);
-
-        send(client_socket, response, strlen(response), 0);
-
-        delete[] numbers;
+        send(client_socket, (char *)&res, sizeof(ServerResponse), 0);
     }
 
     closesocket(client_socket);
@@ -165,9 +149,8 @@ void server()
 
 int main()
 {
-    WSADATA wsaData;
-    WSAStartup(MAKEWORD(2, 2), &wsaData);
+    common_init_handler();
     server();
-    WSACleanup();
+    common_exit_handler();
     return 0;
 }

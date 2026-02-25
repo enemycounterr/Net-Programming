@@ -1,4 +1,4 @@
-#include <vector>
+#include "../include/own_protocol.h"
 #include "common_net.h"
 
 #pragma warning(disable : 4996)
@@ -12,7 +12,6 @@ void error_msg(const char *msg)
 
 void client()
 {
-
     char host[256] = "127.0.0.1";
     short port = DEFAULT_PORT;
 
@@ -35,60 +34,36 @@ void client()
     }
 
     printf("Connected to server!\n");
-    printf("Enter '0' as array size to exit.\n\n");
 
     while (1)
     {
-        int count = 0;
-        printf("Enter count of numbers: ");
-        if (scanf("%d", &count) != 1)
+        ClientRequest req;
+        memset(&req, 0, sizeof(ClientRequest));
+
+        printf("\nEnter count of numbers (0 to exit): ");
+        if (scanf("%d", &req.count) != 1 || req.count <= 0)
+            break;
+
+        if (req.count > MAX_ARRAY_SIZE)
         {
-            while (getchar() != '\n')
-                ;
+            printf("Error: Max size is %d\n", MAX_ARRAY_SIZE);
             continue;
         }
 
-        if (count <= 0)
+        printf("Enter %d numbers: ", req.count);
+        for (int i = 0; i < req.count; i++)
         {
-            printf("Exiting...\n");
+            scanf("%d", &req.data[i]);
+        }
+
+        if (send(s, (char *)&req, sizeof(ClientRequest), 0) <= 0)
             break;
-        }
 
-        std::vector<int> numbers(count);
-        printf("Enter %d numbers: ", count);
-        for (int i = 0; i < count; i++)
-        {
-            scanf("%d", &numbers[i]);
-        }
-        printf("The whole data was stored into array\n");
-
-        int ret = send(s, (char *)&count, sizeof(int), 0);
-        if (ret <= 0)
-        {
-            error_msg("Can't send size");
+        ServerResponse res;
+        if (recv(s, (char *)&res, sizeof(ServerResponse), 0) <= 0)
             break;
-        }
 
-        ret = send(s, (char *)numbers.data(), sizeof(int) * count, 0);
-        if (ret <= 0)
-        {
-            error_msg("Can't send array data");
-            break;
-        }
-
-        printf("Sent array to server. Waiting for result...\n");
-
-        char response[1024] = {0};
-        ret = recv(s, response, sizeof(response), 0);
-
-        if (ret <= 0)
-        {
-            error_msg("Server disconnected");
-            break;
-        }
-
-        response[ret] = '\0';
-        printf("\nServer Reply:\n%s\n-----------------------\n", response);
+        printf("\nServer reply:\n[MIN]:%d\n[MAX]:%d\n[AVG]:%.2f", res.min, res.max, res.average);
     }
 
     closesocket(s);
@@ -96,9 +71,8 @@ void client()
 
 int main()
 {
-    WSADATA wsaData;
-    WSAStartup(MAKEWORD(2, 2), &wsaData);
+    common_init_handler();
     client();
-    WSACleanup();
+    common_exit_handler();
     return 0;
 }

@@ -5,7 +5,7 @@
 #define DEFAULT_PORT 5553
 
 CRITICAL_SECTION consoleLock;
-
+    
 DWORD WINAPI ClientHandler(LPVOID lpParam)
 {
     SOCKET client_socket = (SOCKET)lpParam;
