@@ -46,7 +46,7 @@ bool parse_cmd(int argc, char* argv[], PCOMMAND_OPTIONS p_options)
     }
 
     char all_args[256];
-    memset(all_args, 0, sizeof all_args);
+    memset(all_args, 0, sizeof(all_args));
 
     for (int i = 1; i < argc; ++i) {
         strcat(all_args, argv[i]);
