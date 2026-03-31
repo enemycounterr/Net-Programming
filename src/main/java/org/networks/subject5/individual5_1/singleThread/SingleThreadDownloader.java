@@ -26,7 +26,7 @@ public class SingleThreadDownloader {
             }
 
             String path = source.getPath();
-            return path.substring(path.lastIndexOf('/') + 1);
+            return URLDecoder.decode(path.substring(path.lastIndexOf('/') + 1));
 
         } catch (Exception e) {
             return "downloaded_file.bin";
