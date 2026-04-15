@@ -32,9 +32,9 @@ public class ClientSession implements Runnable {
             EchoPacket response = (EchoPacket) is.readObject();
             int total = this.COUNTER.incrementAndGet();
             if (total % 100 == 0) {
-                System.out.println("Progress: " + total + "/1000. Last: " + response.responseMessage());
+                System.out.println("Progress: " + total + "/1000. Last: " + response.responseMessage() + " /Duration: " + response.durations());
             }
-            
+
 
         } catch (Exception e) {
             System.out.println("Error session: " + e.getMessage());
