@@ -35,7 +35,7 @@ public class ClientSession implements Runnable {
                 System.out.println("Progress: " + total + "/1000. Last: " + response.responseMessage() + " /Duration: " + response.durations());
             }
 
-
+    
         } catch (Exception e) {
             System.out.println("Error session: " + e.getMessage());
         }
