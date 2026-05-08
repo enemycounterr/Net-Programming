@@ -38,8 +38,6 @@ public class PropertyImapConfigReader implements ImapConfigReader {
 
     private String readPassword(Properties properties) {
         String password = properties.getProperty("imap.password");
-        System.out.println(password);
-
 
         if (password == null || password.trim().isEmpty() || "<secret>".equals(password)) {
             if (CONSOLE != null) {
